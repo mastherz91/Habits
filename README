@@ -1,0 +1,45 @@
+Proyecto Habits
+
+Este es un proyecto basado en Express.js y MongoDB para gestionar hábitos.
+
+INSTALACIÓN Y CONFIGURACIÓN
+
+1️⃣ Clonar el repositorio:
+git clone <URL_DEL_REPO>
+cd Habits
+
+2️⃣ Instalar dependencias:
+npm install
+
+3️⃣ Configurar variables de entorno:
+Crea un archivo .env en la raíz del proyecto y agrega:
+MONGO_URI=mongodb://localhost:27017/habits
+PORT=3000
+(Si usas MongoDB Atlas, reemplaza la URI con la conexión proporcionada por Atlas.)
+
+4️⃣ Asegurar que MongoDB esté en ejecución:
+Si usas MongoDB localmente:
+mongod --dbpath /ruta/a/tu/data
+
+5️⃣ Ejecutar el servidor:
+npm start
+Para desarrollo con recarga automática:
+npm run dev
+
+ENDPOINTS DISPONIBLES
+
+✅ Verificar que el servidor responde:
+GET /hello
+Respuesta esperada:
+{"status": "success", "message": "Hello, World"}
+
+✅ Crear un hábito:
+POST /habits
+Body (JSON):
+{"name": "Leer", "description": "Leer 30 minutos", "category": "Desarrollo personal", "frequency": "Diario", "duration": 30}
+Respuesta esperada:
+{"message": "Habit created successfully"}
+
+LICENCIA
+
+Este proyecto está bajo la licencia MIT.
