@@ -1,8 +1,8 @@
+// Función para realizar la solicitud GET
 export const fetchHabits = async () => {
-    const response = await fetch('http://your-backend-url/api/habits');
+    const response = await fetch('http://localhost:5000/habits');
     if (!response.ok) {
-        throw new Error('Failed to fetch habits');
+        throw new Error('Network response was not ok');
     }
-    const data = await response.json();
-    return data;
+    return response.json();
 };

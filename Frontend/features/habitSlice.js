@@ -1,13 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-// Función para realizar la solicitud GET
-const fetchHabits = async () => {
-    const response = await fetch('http://localhost:5000/habits');
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
-};
+import { fetchHabits } from "./habitAPI";
 
 // Acción asíncrona para obtener los hábitos
 export const fetchHabitsThunk = createAsyncThunk('habits/fetchHabits', async () => {
@@ -32,16 +24,9 @@ const habitSlice = createSlice({
         }
     },
     extraReducers: builder => {
-        builder.addCase(fetchHabitsThunk.pending, (state) => {
-            state.loading = true;
-        });
         builder.addCase(fetchHabitsThunk.fulfilled, (state, action) => {
             state.loading = false;
             state.habits = action.payload;
-        });
-        builder.addCase(fetchHabitsThunk.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message || 'Something went wrong';
         });
     }
 });
