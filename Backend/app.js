@@ -44,7 +44,14 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {
+    title: 'Error', // ✅ esto faltaba
+    message: err.message,
+    error: req.app.get('env') === 'development' ? err : {}
+  });
+
 });
+
+
 
 module.exports = app;

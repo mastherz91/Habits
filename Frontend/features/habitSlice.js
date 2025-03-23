@@ -7,6 +7,28 @@ export const fetchHabitsThunk = createAsyncThunk('habits/fetchHabits', async () 
     return response;
 });
 
+// Acción asíncrona para marcar un hábito como hecho
+export const markHabitDoneThunk = createAsyncThunk('habits/markHabitDone', async (habitId, { rejectWithValue }) => {
+    try {
+        const response = await fetch(`http://localhost:5000/habits/${habitId}`, {
+            method: 'PATCH',
+        });
+
+        const responseJson = await response.json();
+        if (!response.ok) {
+            console.error("Backend error:", responseJson); // Log detallado
+            return rejectWithValue(responseJson.error || "Failed to mark habit as done");
+        } else if (responseJson.message === "Habit restarted") {
+            return rejectWithValue(responseJson.message);
+        } else {
+            return responseJson.message;
+        }
+    } catch (error) {
+        console.error("Network error:", error); // Log de errores de red
+        return rejectWithValue(error.message);
+    }
+});
+
 // Estado inicial
 const initialState = {
     habits: [],
@@ -24,12 +46,13 @@ const habitSlice = createSlice({
         }
     },
     extraReducers: builder => {
-        builder.addCase(fetchHabitsThunk.fulfilled, (state, action) => {
-            state.loading = false;
-            state.habits = action.payload;
-        });
+        builder
+            .addCase(fetchHabitsThunk.fulfilled, (state, action) => {
+                state.loading = false;
+                state.habits = action.payload;
+            });
     }
 });
 
-export const { addHabits } = habitSlice.actions;
+export const { addHabits, addHabit, removeHabit } = habitSlice.actions;
 export default habitSlice.reducer;
