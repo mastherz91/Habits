@@ -4,13 +4,17 @@ const bcrypt = require('bcryptjs');
 const User = require('../modelo/User');
 const jwt = require('jsonwebtoken');
 
+
+
+
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
