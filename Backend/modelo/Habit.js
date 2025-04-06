@@ -13,11 +13,11 @@ const habitSchema = new mongoose.Schema({
         required: true
     },
     frequency: {
-        type: String,
+        type: Number,
         required: true
     },
     duration: {
-        type: String,
+        type: Number,
         required: true
     },
     date: {

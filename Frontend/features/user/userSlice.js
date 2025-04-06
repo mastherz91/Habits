@@ -1,61 +1,50 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchRegisterUser, fetchLoginUser, fetchLogoutUser } from './userAPI';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchRegisterUser, fetchLoginUser } from "./userApi";
 
-interface userThunk {
-    username: string;
-    password: string;
-}
-
-type user = {
-    token: string;
-}
-
-type userState = {
-    user: user | null;
-    status: 'idle' | 'loading' | 'failed';
-    error: string | null;
-}
-
-const initialState: userState = {
+// Estado inicial
+const initialState = {
     user: null,
     status: 'idle',
     error: null,
 };
 
-export const fetchRegisterUser = createAsyncThunk(
-    'user/fetchRegisterUser',
-    async ({ username, password }: userThunk, { rejectWithValue }) => {
-        const response = await fetchRegisterUser(username, password);
-        const responseJson = await response.json();
-        console.log(responseJson.message.toString());
-        if (!response.ok) {
-            return rejectWithValue("Failed to register user");
-        } else if (responseJson.message.toString() === "Usuario registrado correctamente") {
-            return responseJson;
-        } else {
-            return rejectWithValue(responseJson.message.toString());
+// Thunk para registrar usuario
+export const fetchRegisterUserThunk = createAsyncThunk(
+    "user/fetchRegisterUser",
+    async ({ username, password }, { rejectWithValue }) => {
+        try {
+            const response = await fetchRegisterUser(username, password);
+            if (response.message === "Usuario creado correctamente") {
+                return response;
+            } else {
+                return rejectWithValue(response.message);
+            }
+        } catch (error) {
+            return rejectWithValue(error.message);
         }
     }
 );
 
+// Thunk para login de usuario
 export const fetchLoginUserThunk = createAsyncThunk(
-    'user/fetchLoginUser',
-    async ({ username, password }: userThunk, { rejectWithValue }) => {
-        const response = await fetchLoginUser(username, password);
-        const responseJson = await response.json();
-        console.log(responseJson.message.toString());
-        if (!response.ok) {
-            return rejectWithValue("Failed to login user");
-        } else if (responseJson.message.toString() === "Usuario logueado correctamente") {
-            return responseJson;
-        } else {
-            return rejectWithValue(responseJson.message.toString());
+    "user/fetchLoginUser",
+    async ({ username, password }, { rejectWithValue }) => {
+        try {
+            const response = await fetchLoginUser(username, password);
+            if (response.message === "Usuario autenticado correctamente") {
+                return response;
+            } else {
+                return rejectWithValue(response.message);
+            }
+        } catch (error) {
+            return rejectWithValue(error.message);
         }
     }
 );
 
+// Slice del usuario
 const userSlice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
     reducers: {
         adduser: (state, action) => {
@@ -63,27 +52,26 @@ const userSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchRegisterUser.fulfilled, (state, action) => {
-            state.status = 'success';
-            state.user = null;
-            state.user = action.payload;
-            alert('Usuario registrado correctamente');
-        })
-            .addCase(fetchRegisterUser.rejected, (state, action) => {
+        builder
+            .addCase(fetchRegisterUserThunk.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.user = action.payload;
+                alert("Usuario registrado correctamente");
+            })
+            .addCase(fetchRegisterUserThunk.rejected, (state, action) => {
                 state.status = 'failed';
                 state.user = null;
-                state.error = action.payload;
-                alert('No es posible registrar el usuario');
+                alert(action.payload || "No se pudo registrar");
+            })
+            .addCase(fetchLoginUserThunk.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.user = action.payload;
+                alert("Login exitoso");
             })
             .addCase(fetchLoginUserThunk.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = action.payload;
-                alert('No es posible iniciar sesión');
-            })
-            .addCase(fetchLoginUserThunk.fulfilled, (state, action) => {
-                state.status = 'success';
-                state.user = action.payload;
-                state.error = action.payload;
+                state.user = null;
+                alert(action.payload || "No se pudo iniciar sesión");
             });
     },
 });

@@ -1,12 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
 import habitReducer from "../features/habitSlice";
-import { useReducer } from "react";
+import userReducer from "../features/user/userSlice";
 
-
-export const makestore = () => {
+// Redux/store.js
+export const makeStore = () => {
     return configureStore({
         reducer: {
-            habits: habitReducer
-        }
+            habits: habitReducer,
+            user: userReducer,
+        },
     });
 };
+
+
+export const store = makeStore();
+export const AppDispatch = store.dispatch;
+export const RootState = store.getState;
+
